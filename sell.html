@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sell Your Phone - SAF Mobiles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    fetch('api/check_auth.php')
+      .then(res => {
+        if(res.status === 401) {
+          window.location.replace('login.html');
+          throw new Error('Unauthorized');
+        }
+        return res.json();
+      })
+      .then(data => {
+        if(!data.authenticated) {
+          window.location.replace('login.html');
+        }
+      })
+      .catch(() => {
+        window.location.replace('login.html');
+      });
+  </script>
+</head>
+<body id="page-sell">
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <aside class="sidebar" id="mobile-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-brand text-primary"><i class="fa-solid fa-mobile-screen"></i> SAF Mobiles</div>
+    </div>
+    <div class="sidebar-links">
+      <a href="index.html" class="sidebar-link"><i class="fa-solid fa-house" style="width: 25px;"></i> Home</a>
+      <a href="products.html" class="sidebar-link"><i class="fa-solid fa-compass" style="width: 25px;"></i> Explore</a>
+      <a href="compare.html" class="sidebar-link"><i class="fa-solid fa-code-compare" style="width: 25px;"></i> Compare specs</a>
+      <a href="sell.html" class="sidebar-link active"><i class="fa-solid fa-money-bill-wave" style="width: 25px;"></i> Sell Device</a>
+    </div>
+  </aside>
+
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="nav-left">
+        <button class="icon-btn hamburger" id="hamburger-btn">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <a href="index.html" class="logo-brand">
+          <img src="assets/images/logo.png" alt="SAF Logo"> SAF Mobiles
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="products.html" class="nav-item">Explore</a>
+        <a href="compare.html" class="nav-item">Compare</a>
+        <a href="sell.html" class="nav-item active">Sell</a>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="login.html" class="icon-btn"><i class="fa-regular fa-user"></i></a>
+        <a href="cart.html" class="icon-btn">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge cart-badge" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="section-grey" style="min-height: calc(100vh - 70px);">
+    <div class="container">
+      
+      <div class="form-section">
+        <div style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%); color: white; padding: var(--spacing-xl); border-radius: var(--border-radius-lg); margin-bottom: var(--spacing-xl); text-align: center; box-shadow: 0 10px 30px rgba(0, 102, 204, 0.2);">
+          <h1 style="margin-bottom: var(--spacing-sm); color: white;">Get the best value.</h1>
+          <p style="opacity: 0.9; font-size: 1.1rem;">Post an ad in under 2 minutes and sell directly to our huge network of buyers.</p>
+        </div>
+
+        <form style="background: var(--surface-color); padding: 40px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.02);" onsubmit="event.preventDefault(); showToast('Ad submitted successfully! Waiting for admin approval.', 'success'); this.reset(); document.getElementById('upload-preview').innerHTML = '';">
+          <h2 style="margin-bottom: var(--spacing-lg); border-bottom: 2px solid var(--bg-color); padding-bottom: 12px;">1. Device Information</h2>
+          
+          <div class="input-group">
+            <label>Brand & Model Label</label>
+            <input type="text" class="input-control" placeholder="e.g. iPhone 13 Pro Max 256GB" required>
+          </div>
+
+          <div class="input-group">
+            <label>Physical Condition</label>
+            <select class="input-control" style="appearance: auto; cursor: pointer;">
+              <option value="mint">Flawless / Like New</option>
+              <option value="good">Good (Minor scratches)</option>
+              <option value="fair">Fair (Visible wear and tear)</option>
+              <option value="broken">Broken (Cracked screen/back)</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Expected Price ($)</label>
+            <input type="number" class="input-control" placeholder="e.g. 500" required>
+          </div>
+
+          <h2 style="margin-top: var(--spacing-xl); margin-bottom: var(--spacing-lg); border-bottom: 2px solid var(--bg-color); padding-bottom: 12px;">2. Upload Media</h2>
+          
+          <!-- Interactive File Input -->
+          <label for="device-photos" style="display:block; border: 2px dashed var(--primary-color); background: rgba(0, 102, 204, 0.02); border-radius: var(--border-radius-md); padding: 40px 20px; text-align: center; margin-bottom: var(--spacing-sm); cursor: pointer; transition: all 0.2s ease;">
+            <i class="fa-solid fa-cloud-arrow-up text-primary" style="font-size: 2.5rem; margin-bottom: 12px;"></i>
+            <h4 style="margin-bottom: 4px; color: var(--text-primary);">Click to select photos</h4>
+            <p class="text-secondary text-sm">PNG, JPG up to 10MB (Max 5 photos)</p>
+            <input type="file" id="device-photos" multiple accept="image/*" style="display: none;">
+          </label>
+          
+          <!-- Image Previews generated by JS -->
+          <div id="upload-preview" class="upload-preview-container" style="margin-bottom: var(--spacing-xl);"></div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 10px;">Post Your Ad</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

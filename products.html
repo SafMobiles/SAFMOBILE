@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Explore Devices - SAF Mobiles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    fetch('api/check_auth.php')
+      .then(res => {
+        if(res.status === 401) {
+          window.location.replace('login.html');
+          throw new Error('Unauthorized');
+        }
+        return res.json();
+      })
+      .then(data => {
+        if(!data.authenticated) {
+          window.location.replace('login.html');
+        }
+      })
+      .catch(() => {
+        window.location.replace('login.html');
+      });
+  </script>
+</head>
+<body id="page-products">
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <!-- Mobile Sidebar -->
+  <aside class="sidebar" id="mobile-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-brand text-primary">
+        <i class="fa-solid fa-mobile-screen"></i> SAF Mobiles
+      </div>
+    </div>
+    <div class="sidebar-links">
+      <a href="index.html" class="sidebar-link"><i class="fa-solid fa-house" style="width: 25px;"></i> Home</a>
+      <a href="products.html" class="sidebar-link active"><i class="fa-solid fa-compass" style="width: 25px;"></i> Explore</a>
+      <a href="compare.html" class="sidebar-link"><i class="fa-solid fa-code-compare" style="width: 25px;"></i> Compare specs</a>
+      <a href="sell.html" class="sidebar-link"><i class="fa-solid fa-money-bill-wave" style="width: 25px;"></i> Sell Device</a>
+      <a href="admin.html" class="sidebar-link"><i class="fa-solid fa-chart-line" style="width: 25px;"></i> Admin Dashboard</a>
+    </div>
+  </aside>
+
+  <!-- Top Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="nav-left">
+        <button class="icon-btn hamburger" id="hamburger-btn">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <a href="index.html" class="logo-brand">
+          <img src="assets/images/logo.png" alt="SAF Logo">
+          SAF Mobiles
+        </a>
+      </div>
+      
+      <div class="nav-links">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="products.html" class="nav-item active">Explore</a>
+        <a href="compare.html" class="nav-item">Compare</a>
+        <a href="sell.html" class="nav-item">Sell</a>
+      </div>
+      
+      <div style="display: flex; gap: 10px;">
+        <a href="login.html" class="icon-btn"><i class="fa-regular fa-user"></i></a>
+        <a href="cart.html" class="icon-btn">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge cart-badge" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="section-light">
+    <div class="container">
+      
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--spacing-lg); flex-wrap: wrap; gap: var(--spacing-md);">
+        <div>
+          <h1 style="font-size: 2rem; margin-bottom: 4px;">Smartphones</h1>
+          <p class="text-secondary">Showing all available devices</p>
+        </div>
+        
+        <div class="search-input-wrapper" style="max-width: 300px; flex: 1;">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" class="input-control" placeholder="Search devices...">
+        </div>
+      </div>
+      
+      <!-- Product Grid (Cards) -->
+      <div id="products-grid" class="product-grid">
+        <!-- Populated via app.js -->
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Footer block -->
+  <footer style="background: white; padding: 40px 0; border-top: 1px solid var(--border-color); text-align: center;">
+    <p class="text-secondary">© 2026 SAF Mobiles. Premium eCommerce Demo.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

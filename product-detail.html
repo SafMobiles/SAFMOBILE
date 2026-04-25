@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Device Specifications - SAF Mobiles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    fetch('api/check_auth.php')
+      .then(res => {
+        if(res.status === 401) {
+          window.location.replace('login.html');
+          throw new Error('Unauthorized');
+        }
+        return res.json();
+      })
+      .then(data => {
+        if(!data.authenticated) {
+          window.location.replace('login.html');
+        }
+      })
+      .catch(() => {
+        window.location.replace('login.html');
+      });
+  </script>
+</head>
+<body id="page-product-detail">
+
+  <!-- Sidebar logic -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <aside class="sidebar" id="mobile-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-brand text-primary"><i class="fa-solid fa-mobile-screen"></i> SAF Mobiles</div>
+    </div>
+    <div class="sidebar-links">
+      <a href="index.html" class="sidebar-link"><i class="fa-solid fa-house" style="width: 25px;"></i> Home</a>
+      <a href="products.html" class="sidebar-link active"><i class="fa-solid fa-compass" style="width: 25px;"></i> Explore</a>
+    </div>
+  </aside>
+
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="nav-left">
+        <button class="icon-btn hamburger" id="hamburger-btn">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <a href="index.html" class="logo-brand">
+          <img src="assets/images/logo.png" alt="SAF Logo"> SAF Mobiles
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="products.html" class="nav-item active">Explore</a>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="cart.html" class="icon-btn">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge cart-badge" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="section-light">
+    <div class="container">
+      <div style="margin-bottom: var(--spacing-lg);">
+        <a href="products.html" class="text-secondary" style="font-weight: 500;"><i class="fa-solid fa-arrow-left"></i> Back to Products</a>
+      </div>
+      
+      <div id="detail-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--spacing-xl); align-items: center;">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const idStr = params.get('id');
+      const id = parseInt(idStr) || 1; 
+      const product = products.find(p => p.id === id);
+      
+      if(product) {
+        document.getElementById('detail-content').innerHTML = `
+          <!-- Left side: Image -->
+          <div style="background: var(--bg-color); border-radius: var(--border-radius-lg); padding: 40px; display: flex; justify-content: center; border: 1px solid var(--border-color);">
+            <img src="${product.image}" alt="${product.name}" style="max-width: 100%; height: auto; max-height: 450px;">
+          </div>
+          
+          <!-- Right side: Content -->
+          <div>
+            <div style="margin-bottom: var(--spacing-md);">
+              <span style="font-size: 0.85rem; font-weight: 700; color: white; background: var(--secondary-color); padding: 4px 12px; border-radius: 100px; text-transform: uppercase;">${product.condition}</span>
+            </div>
+            
+            <p class="text-secondary" style="margin-bottom: 4px; text-transform: uppercase; font-weight: 600; font-size: 0.9rem;">${product.brand}</p>
+            <h1 style="font-size: 2.5rem; line-height: 1.1; margin-bottom: var(--spacing-sm);">${product.name}</h1>
+            
+            <div style="margin-bottom: var(--spacing-lg); display: flex; align-items: baseline; gap: 10px;">
+              <span class="text-primary" style="font-size: 2rem; font-weight: 700;">$${product.price}</span>
+              <span class="text-secondary text-sm">Free Delivery</span>
+            </div>
+            
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin-bottom: var(--spacing-md);">
+            
+            <h3 style="font-size: 1.25rem; margin-bottom: var(--spacing-md);">Key Features</h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: var(--spacing-xl);">
+              <li style="display: flex; gap: 12px;"><i class="fa-solid fa-mobile-screen text-primary" style="font-size: 1.25rem;"></i> <div><strong style="display: block;">Display</strong><span class="text-secondary">${product.specs.screen}</span></div></li>
+              <li style="display: flex; gap: 12px;"><i class="fa-solid fa-microchip text-primary" style="font-size: 1.25rem;"></i> <div><strong style="display: block;">Performance</strong><span class="text-secondary">${product.specs.chip}</span></div></li>
+              <li style="display: flex; gap: 12px;"><i class="fa-solid fa-camera text-primary" style="font-size: 1.25rem;"></i> <div><strong style="display: block;">Camera System</strong><span class="text-secondary">${product.specs.camera}</span></div></li>
+            </ul>
+            
+            <div style="display: flex; gap: var(--spacing-md);">
+              <button class="btn btn-primary" style="flex: 2; padding: 14px; font-size: 1.1rem;" onclick="addToCart(${product.id})">Add to Cart</button>
+              <button class="btn btn-outline" style="flex: 1; padding: 14px;" onclick="window.location='compare.html'"><i class="fa-solid fa-code-compare"></i> Compare</button>
+            </div>
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>

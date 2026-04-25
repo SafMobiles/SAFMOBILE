@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Account Access - SAF Mobiles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body id="page-login" style="background-color: var(--surface-color);">
+
+  <nav class="navbar" style="border-bottom: 1px solid var(--border-color); box-shadow: none;">
+    <div class="container nav-container" style="justify-content: center;">
+      <a href="index.html" class="logo-brand">
+        <img src="assets/images/logo.png" alt="SAF Logo"> SAF Mobiles
+      </a>
+    </div>
+  </nav>
+
+  <div class="section-light" style="min-height: calc(100vh - 70px); align-items: center; display: flex;">
+    <div class="container form-section">
+      
+      <div style="text-align: center; margin-bottom: var(--spacing-xl);">
+        <h1 style="font-size: 2.5rem; margin-bottom: 8px;">Welcome Back</h1>
+        <p class="text-secondary" style="font-size: 1.1rem;">Sign in to manage your orders & wishlist.</p>
+      </div>
+
+      <form id="login-form">
+        <div id="login-alert" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 16px; text-align: center; font-weight: 500;"></div>
+
+        <div class="input-group">
+          <label>Username</label>
+          <input type="text" name="username" class="input-control" placeholder="Enter your username" required style="padding: 14px;">
+        </div>
+        
+        <div class="input-group">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <label>Password</label>
+            <a href="#" class="text-primary text-sm" style="font-weight: 500;">Forgot Password?</a>
+          </div>
+          <input type="password" name="password" class="input-control" placeholder="••••••••" required style="padding: 14px;">
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 24px; box-shadow: 0 4px 12px rgba(0,102,204,0.3);">
+          <span id="btnText">Sign In</span>
+          <i id="btnSpinner" class="fa-solid fa-spinner fa-spin" style="display: none;"></i>
+        </button>
+        
+        <!-- Social Login -->
+        <div style="margin-top: 40px; text-align: center; position: relative;">
+          <hr style="border: 0; border-top: 1px solid var(--border-color); margin-bottom: 24px;">
+          <span class="text-secondary text-sm" style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--surface-color); padding: 0 16px;">Or connect with</span>
+          
+          <div style="display: flex; gap: var(--spacing-md); justify-content: center;">
+            <button type="button" class="btn btn-outline" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; border-color: var(--border-color); color: var(--text-primary);"><i class="fa-brands fa-google text-danger"></i> Google</button>
+            <button type="button" class="btn btn-outline" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; border-color: var(--border-color); color: var(--text-primary);"><i class="fa-brands fa-apple"></i> Apple</button>
+          </div>
+        </div>
+
+      </form>
+
+      <div style="margin-top: 60px; text-align: center;">
+        <p class="text-secondary">Don't have an account? <a href="#" class="text-primary text-bold">Create one</a></p>
+        <p class="text-sm text-secondary" style="margin-top: var(--spacing-md);">
+          <i class="fa-solid fa-lock" style="margin-right: 4px;"></i> Secure Staff Access: 
+          <a href="admin.html" class="text-primary text-bold">Admin Portal Login</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const form = this;
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const alertBox = document.getElementById('login-alert');
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      // Loading state
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+      submitBtn.disabled = true;
+      alertBox.style.display = 'none';
+
+      const formData = new FormData(form);
+
+      fetch('api/login.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          alertBox.style.backgroundColor = '#e6f4ea';
+          alertBox.style.color = '#1e8e3e';
+          alertBox.textContent = data.message + ' Redirecting...';
+          alertBox.style.display = 'block';
+
+          setTimeout(() => {
+            window.location.href = data.redirect;
+          }, 1000);
+        } else {
+          alertBox.style.backgroundColor = '#fce8e6';
+          alertBox.style.color = '#d93025';
+          alertBox.textContent = data.message;
+          alertBox.style.display = 'block';
+
+          btnText.style.display = 'inline-block';
+          btnSpinner.style.display = 'none';
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(err => {
+        alertBox.style.backgroundColor = '#fce8e6';
+        alertBox.style.color = '#d93025';
+        alertBox.textContent = 'A system error occurred.';
+        alertBox.style.display = 'block';
+
+        btnText.style.display = 'inline-block';
+        btnSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>
